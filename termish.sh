@@ -62,7 +62,7 @@ $FORTUNE_OUTPUT
 EOF
 
 # Output everything in a single border with random color
-gum style --width $TERM_WIDTH --border double --margin "1" --padding "2 4" --border-foreground $BORDER_COLOR "$(cat "$TEMP_FILE")"
+gum style --width $TERM_WIDTH --border rounded --margin "1" --padding "2 4" --border-foreground $BORDER_COLOR "$(cat "$TEMP_FILE")"
 
 # Clean up
 rm "$TEMP_FILE"
@@ -70,13 +70,16 @@ rm "$TEMP_FILE"
 # Add some colorful decoration at the bottom with block characters
 BLOCK_CHARS=("█" "▓" "▒" "░" "■" "□" "▪" "▫" "▬" "▭" "▮" "▯")
 DECORATION=""
-for ((i=0; i<TERM_WIDTH; i++)); do
+# Calculate the effective width for the decoration (accounting for margins and padding)
+EFFECTIVE_WIDTH=$((TERM_WIDTH - 8)) # Adjust for margins and padding
+for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
     BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
     DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
 done
 
+# Print the decoration with proper margins
 echo
-echo "$DECORATION"
+gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
 
 # Display a random motivational message in a different color box
 MESSAGES=(
@@ -93,14 +96,15 @@ RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
 MESSAGE_COLOR=$(get_random_color)
 BOX_COLOR=$(get_random_color)
 
-gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border normal --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
+gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border rounded --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
 
 # Add some colorful decoration at the bottom with block characters
 DECORATION=""
-for ((i=0; i<TERM_WIDTH; i++)); do
+for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
     BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
     DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
 done
 
+# Print the decoration with proper margins
 echo
-echo "$DECORATION"
+gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
