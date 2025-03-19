@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Check if decoration flag is passed
+DECORATE=false
+if [[ "$1" == "--decorate" ]]; then
+    DECORATE=true
+fi
+
 # Check if Gum CLI is installed (required for the interactive interface)
 if ! command -v gum &> /dev/null; then
     echo "Error: Gum CLI is not installed. Please install it first."
@@ -67,19 +73,21 @@ gum style --width $TERM_WIDTH --border thick --margin "1" --padding "2 4" --bord
 # Clean up
 rm "$TEMP_FILE"
 
-# Add some colorful decoration at the bottom with block characters
-BLOCK_CHARS=("█" "▓" "▒" "░" "■" "□" "▪" "▫" "▬" "▭" "▮" "▯")
-DECORATION=""
-# Calculate the effective width for the decoration (accounting for margins and padding)
-EFFECTIVE_WIDTH=$((TERM_WIDTH - 8)) # Adjust for margins and padding
-for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
-    BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
-    DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
-done
+# Add some colorful decoration at the bottom with block characters (if flag is passed)
+if $DECORATE; then
+    BLOCK_CHARS=("█" "▓" "▒" "░" "■" "□" "▪" "▫" "▬" "▭" "▮" "▯")
+    DECORATION=""
+    # Calculate the effective width for the decoration (accounting for margins and padding)
+    EFFECTIVE_WIDTH=$((TERM_WIDTH - 8)) # Adjust for margins and padding
+    for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
+        BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
+        DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
+    done
 
-# Print the decoration with proper margins
-echo
-gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
+    # Print the decoration with proper margins
+    echo
+    gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
+fi
 
 # Display a random motivational message in a different color box
 # Install jq if not already installed
@@ -105,13 +113,15 @@ BOX_COLOR=$(get_random_color)
 
 gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border thick --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
 
-# # Add some colorful decoration at the bottom with block characters
-# DECORATION=""
-# for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
-#     BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
-#     DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
-# done
+# Add some colorful decoration at the bottom with block characters (if flag is passed)
+if $DECORATE; then
+    # DECORATION=""
+    # for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
+    #     BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
+    #     DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
+    # done
 
-# Print the decoration with proper margins
-echo
-gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
+    # Print the decoration with proper margins
+    echo
+    gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
+fi
