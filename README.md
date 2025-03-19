@@ -1,8 +1,6 @@
-# Termish - Documentation
+# Termish
 
-## Introduction
-
-**Termish** is a delightful command-line tool that enhances your terminal experience with a personalized welcome message. It provides a visually appealing greeting screen with the current date, time, and a randomly generated fortune quote displayed in a stylish cowsay format. With an elegant interface powered by [Gum CLI](https://github.com/charmbracelet/gum), Termish makes your terminal sessions more engaging and enjoyable.
+**Termish** is a delightful command-line tool that enhances your terminal experience with a personalized welcome message. It provides a visually appealing greeting screen with the current date, time, and a randomly generated fortune quote displayed in a stylish cowsay format. Powered by [Gum CLI](https://github.com/charmbracelet/gum), Termish makes your terminal sessions more engaging and enjoyable.
 
 ---
 
@@ -22,46 +20,6 @@
   - Automatically detects your distribution name (with WSL support).
   - Displays your username for a personalized experience.
   - Shows the current date and time in a readable format.
-
----
-
-## Dependencies
-
-Before using Termish, ensure the following dependencies are installed:
-
-1. **Gum CLI** (Required):
-   - Powers the interactive and stylish interface.
-   - Install on macOS:
-     ```bash
-     brew install gum
-     ```
-   - Install on Linux:
-     ```bash
-     sudo apt install gum
-     ```
-   - Alternatively, visit the [Gum CLI GitHub page](https://github.com/charmbracelet/gum) for installation instructions.
-
-2. **Fortune** (Optional but recommended):
-   - Provides random quotes for the welcome message.
-   - Install on Ubuntu/Debian:
-     ```bash
-     sudo apt install fortune
-     ```
-   - Install on macOS:
-     ```bash
-     brew install fortune
-     ```
-
-3. **Cowsay** (Optional but recommended):
-   - Displays the fortune quotes in a fun ASCII art format.
-   - Install on Ubuntu/Debian:
-     ```bash
-     sudo apt install cowsay
-     ```
-   - Install on macOS:
-     ```bash
-     brew install cowsay
-     ```
 
 ---
 
@@ -111,8 +69,6 @@ This script will:
 
 ## Usage
 
-### Running Termish
-
 To start using Termish, simply run the following command:
 
 ```bash
@@ -123,6 +79,48 @@ This will display a beautifully formatted welcome message in your terminal with:
 - A personalized greeting with your username and distribution name
 - The current date and time
 - A random fortune quote displayed using cowsay (if installed)
+
+---
+
+## Dependencies
+
+Before using Termish, ensure the following dependencies are installed:
+
+1. **Gum CLI** (Required):
+   - Powers the interactive and stylish interface.
+   - Install on macOS:
+     ```bash
+     brew install gum
+     ```
+   - Install on Linux:
+     ```bash
+     sudo apt install gum
+     ```
+   - Alternatively, visit the [Gum CLI GitHub page](https://github.com/charmbracelet/gum) for installation instructions.
+
+2. **Fortune** (Optional but recommended):
+   - Provides random quotes for the welcome message.
+   - Install on Ubuntu/Debian:
+     ```bash
+     sudo apt install fortune
+     ```
+   - Install on macOS:
+     ```bash
+     brew install fortune
+     ```
+
+3. **Cowsay** (Optional but recommended):
+   - Displays the fortune quotes in a fun ASCII art format.
+   - Install on Ubuntu/Debian:
+     ```bash
+     sudo apt install cowsay
+     ```
+   - Install on macOS:
+     ```bash
+     brew install cowsay
+     ```
+
+---
 
 ### Customization
 

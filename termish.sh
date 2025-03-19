@@ -2,12 +2,17 @@
 
 # Initialize flags
 DECORATE=false
+MOTIVATIONAL=true
 
 # Parse command-line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -d|--decorate)
             DECORATE=true
+            shift
+            ;;
+        -nm|--no-motivational)
+            MOTIVATIONAL=false
             shift
             ;;
         *)
@@ -100,29 +105,32 @@ if $DECORATE; then
     gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
 fi
 
-# Display a random motivational message in a different color box
-# Install jq if not already installed
-# sudo apt install jq / brew install jq
+# Display a random motivational message in a different color box (if flag is passed)
+if $MOTIVATIONAL; then
+    # Load messages from JSON file
+    if [ -f "$HOME/.config/termish/messages.json" ]; then
+        # Get the number of messages
+        MESSAGE_COUNT=$(jq '.messages | length' "$HOME/.config/termish/messages.json")
+        # Select a random message
+        RANDOM_INDEX=$((RANDOM % MESSAGE_COUNT))
+        RANDOM_MESSAGE=$(jq -r ".messages[$RANDOM_INDEX]" "$HOME/.config/termish/messages.json")
+    else
+        # Fallback to hardcoded messages if file doesn't exist
+        MESSAGES=(
+            "Have a productive day!"
+            "Keep pushing forward!"
+            "Believe in yourself!"
+            "Every day is a new opportunity!"
+            "Stay curious and keep learning!"
+        )
+        RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+    fi
 
-# Load messages from JSON file
-if [ -f "$HOME/.config/termish/messages.json" ]; then
-    # Get the number of messages
-    MESSAGE_COUNT=$(jq '.messages | length' "$HOME/.config/termish/messages.json")
-    # Select a random message
-    RANDOM_INDEX=$((RANDOM % MESSAGE_COUNT))
-    RANDOM_MESSAGE=$(jq -r ".messages[$RANDOM_INDEX]" "$HOME/.config/termish/messages.json")
-else
-    # Fallback to hardcoded messages if file doesn't exist
-    MESSAGES=(
-        "Have a productive day!"
-    )
-    RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+    MESSAGE_COLOR=$(get_random_color)
+    BOX_COLOR=$(get_random_color)
+
+    gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border thick --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
 fi
-
-MESSAGE_COLOR=$(get_random_color)
-BOX_COLOR=$(get_random_color)
-
-gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border thick --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
 
 # Add some colorful decoration at the bottom with block characters (if flag is passed)
 if $DECORATE; then
