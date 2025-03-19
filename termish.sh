@@ -62,7 +62,7 @@ $FORTUNE_OUTPUT
 EOF
 
 # Output everything in a single border with random color
-gum style --width $TERM_WIDTH --border rounded --margin "1" --padding "2 4" --border-foreground $BORDER_COLOR "$(cat "$TEMP_FILE")"
+gum style --width $TERM_WIDTH --border thick --margin "1" --padding "2 4" --border-foreground $BORDER_COLOR "$(cat "$TEMP_FILE")"
 
 # Clean up
 rm "$TEMP_FILE"
@@ -96,14 +96,14 @@ RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
 MESSAGE_COLOR=$(get_random_color)
 BOX_COLOR=$(get_random_color)
 
-gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border rounded --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
+gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border thick --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
 
-# Add some colorful decoration at the bottom with block characters
-DECORATION=""
-for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
-    BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
-    DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
-done
+# # Add some colorful decoration at the bottom with block characters
+# DECORATION=""
+# for ((i=0; i<EFFECTIVE_WIDTH; i++)); do
+#     BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
+#     DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
+# done
 
 # Print the decoration with proper margins
 echo
