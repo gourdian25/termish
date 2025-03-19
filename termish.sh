@@ -70,7 +70,7 @@ rm "$TEMP_FILE"
 # Add some colorful decoration at the bottom with block characters
 BLOCK_CHARS=("█" "▓" "▒" "░" "■" "□" "▪" "▫" "▬" "▭" "▮" "▯")
 DECORATION=""
-for i in {1..40}; do
+for ((i=0; i<TERM_WIDTH; i++)); do
     BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
     DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
 done
@@ -94,3 +94,13 @@ MESSAGE_COLOR=$(get_random_color)
 BOX_COLOR=$(get_random_color)
 
 gum style --align center --width $TERM_WIDTH --margin "1" --padding "1 2" --border normal --border-foreground $BOX_COLOR "$(gum style --foreground $MESSAGE_COLOR --bold "$RANDOM_MESSAGE")"
+
+# Add some colorful decoration at the bottom with block characters
+DECORATION=""
+for ((i=0; i<TERM_WIDTH; i++)); do
+    BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
+    DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
+done
+
+echo
+echo "$DECORATION"
