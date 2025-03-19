@@ -25,21 +25,7 @@ get_random_color() {
     echo ${COLORS[$RANDOM % ${#COLORS[@]}]}
 }
 
-# Generate fortune cowsay output with colorful cowsay
-if command -v fortune > /dev/null && command -v cowsay > /dev/null; then
-    cowfile=$(cowsay -l | tail -n +2 | tr ' ' '\n' | shuf -n 1)
-    FORTUNE_TEXT=$(fortune)
-    COWSAY_COLOR=$(get_random_color)
-    # Use direct color code to avoid escape sequence issues
-    FORTUNE_OUTPUT=$(fortune | cowsay -f "$cowfile" | gum style --foreground $COWSAY_COLOR)
-else
-    FORTUNE_OUTPUT=$(gum style --foreground $(get_random_color) --bold "Install fortune and cowsay for daily quotes!")
-fi
-
-# Create a temporary file for the content
-TEMP_FILE=$(mktemp)
-
-# Random colors for each element
+# Generate colors for each element
 WELCOME_COLOR=$(get_random_color)
 DATE_COLOR=$(get_random_color)
 TIME_COLOR=$(get_random_color)
@@ -47,10 +33,27 @@ BORDER_COLOR=$(get_random_color)
 USERNAME_COLOR=$(get_random_color)
 DISTRO_COLOR=$(get_random_color)
 
-# Write the content to the temporary file with random colors
-# Use direct styling to avoid escape sequence issues
+# Generate fortune cowsay output with colorful cowsay
+if command -v fortune > /dev/null && command -v cowsay > /dev/null; then
+    cowfile=$(cowsay -l | tail -n +2 | tr ' ' '\n' | shuf -n 1)
+    FORTUNE_OUTPUT=$(fortune | cowsay -f "$cowfile" | gum style --foreground $(get_random_color))
+else
+    FORTUNE_OUTPUT=$(gum style --foreground $(get_random_color) --bold "Install fortune and cowsay for daily quotes!")
+fi
+
+# Create a temporary file for the content
+TEMP_FILE=$(mktemp)
+
+# Create the welcome line WITHOUT nesting gum style commands
+# Format each part separately
+WELCOME_HEADER="Welcome to"
+STYLED_DISTRO=$(gum style --foreground $DISTRO_COLOR "$DISTRO_NAME")
+TERMINAL_TEXT="'s Terminal"
+STYLED_USER=$(gum style --foreground $USERNAME_COLOR "$USER")
+
+# Write the content to the temporary file
 cat > "$TEMP_FILE" << EOF
-$(gum style --align center --foreground $WELCOME_COLOR --bold --underline "Welcome to $(gum style --foreground $DISTRO_COLOR "$DISTRO_NAME")'s Terminal $(gum style --foreground $USERNAME_COLOR "$USER")")
+$(gum style --align center "$WELCOME_HEADER $STYLED_DISTRO$TERMINAL_TEXT $STYLED_USER")
 
 $(gum style --align center --foreground $DATE_COLOR "Today is $CURRENT_DATE")
 $(gum style --align center --foreground $TIME_COLOR "The time is $CURRENT_TIME")
@@ -64,7 +67,7 @@ gum style --width $TERM_WIDTH --border double --margin "1" --padding "2 4" --bor
 # Clean up
 rm "$TEMP_FILE"
 
-# Add some colorful decoration at the bottom with block characters instead of diamonds
+# Add some colorful decoration at the bottom with block characters
 BLOCK_CHARS=("█" "▓" "▒" "░" "■" "□" "▪" "▫" "▬" "▭" "▮" "▯")
 DECORATION=""
 for i in {1..40}; do
@@ -73,7 +76,7 @@ for i in {1..40}; do
 done
 
 echo
-gum style --align center "$DECORATION"
+echo "$DECORATION"
 
 # Display a random motivational message in a different color box
 MESSAGES=(
