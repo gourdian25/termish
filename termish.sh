@@ -1,10 +1,21 @@
 #!/bin/bash
 
-# Check if decoration flag is passed
+# Initialize flags
 DECORATE=false
-if [[ "$1" == "--decorate" ]]; then
-    DECORATE=true
-fi
+
+# Parse command-line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d|--decorate)
+            DECORATE=true
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
 
 # Check if Gum CLI is installed (required for the interactive interface)
 if ! command -v gum &> /dev/null; then
