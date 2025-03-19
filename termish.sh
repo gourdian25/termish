@@ -13,7 +13,7 @@ TERM_WIDTH=$(( $(tput cols) - 4 ))
 # Get distro name with fallback
 DISTRO_NAME=${WSL_DISTRO_NAME:-$(hostname)}
 
-# Current date and time in formal format
+# Current date and time in formal format - use system time
 CURRENT_DATE=$(date +"%A, %B %d, %Y")
 CURRENT_TIME=$(date +"%I:%M %p")
 
@@ -30,7 +30,8 @@ if command -v fortune > /dev/null && command -v cowsay > /dev/null; then
     cowfile=$(cowsay -l | tail -n +2 | tr ' ' '\n' | shuf -n 1)
     FORTUNE_TEXT=$(fortune)
     COWSAY_COLOR=$(get_random_color)
-    FORTUNE_OUTPUT=$(gum style --foreground $COWSAY_COLOR "$(echo "$FORTUNE_TEXT" | cowsay -f "$cowfile")")
+    # Use direct color code to avoid escape sequence issues
+    FORTUNE_OUTPUT=$(fortune | cowsay -f "$cowfile" | gum style --foreground $COWSAY_COLOR)
 else
     FORTUNE_OUTPUT=$(gum style --foreground $(get_random_color) --bold "Install fortune and cowsay for daily quotes!")
 fi
@@ -40,20 +41,19 @@ TEMP_FILE=$(mktemp)
 
 # Random colors for each element
 WELCOME_COLOR=$(get_random_color)
-DATE_LABEL_COLOR=$(get_random_color)
-DATE_VALUE_COLOR=$(get_random_color)
-TIME_LABEL_COLOR=$(get_random_color)
-TIME_VALUE_COLOR=$(get_random_color)
+DATE_COLOR=$(get_random_color)
+TIME_COLOR=$(get_random_color)
 BORDER_COLOR=$(get_random_color)
 USERNAME_COLOR=$(get_random_color)
 DISTRO_COLOR=$(get_random_color)
 
 # Write the content to the temporary file with random colors
+# Use direct styling to avoid escape sequence issues
 cat > "$TEMP_FILE" << EOF
 $(gum style --align center --foreground $WELCOME_COLOR --bold --underline "Welcome to $(gum style --foreground $DISTRO_COLOR "$DISTRO_NAME")'s Terminal $(gum style --foreground $USERNAME_COLOR "$USER")")
 
-$(gum style --align center --foreground $DATE_LABEL_COLOR "Today is $(gum style --foreground $DATE_VALUE_COLOR --bold "$CURRENT_DATE")")
-$(gum style --align center --foreground $TIME_LABEL_COLOR "The time is $(gum style --foreground $TIME_VALUE_COLOR --bold "$CURRENT_TIME")")
+$(gum style --align center --foreground $DATE_COLOR "Today is $CURRENT_DATE")
+$(gum style --align center --foreground $TIME_COLOR "The time is $CURRENT_TIME")
 
 $FORTUNE_OUTPUT
 EOF
@@ -64,10 +64,12 @@ gum style --width $TERM_WIDTH --border double --margin "1" --padding "2 4" --bor
 # Clean up
 rm "$TEMP_FILE"
 
-# Add some colorful decoration at the bottom
+# Add some colorful decoration at the bottom with block characters instead of diamonds
+BLOCK_CHARS=("█" "▓" "▒" "░" "■" "□" "▪" "▫" "▬" "▭" "▮" "▯")
 DECORATION=""
-for i in {1..20}; do
-    DECORATION+="$(gum style --foreground $(get_random_color) "◆ ")"
+for i in {1..40}; do
+    BLOCK_CHAR=${BLOCK_CHARS[$RANDOM % ${#BLOCK_CHARS[@]}]}
+    DECORATION+="$(gum style --foreground $(get_random_color) "$BLOCK_CHAR")"
 done
 
 echo
