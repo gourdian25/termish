@@ -82,17 +82,24 @@ echo
 gum style --width $TERM_WIDTH --margin "1" --padding "0 4" "$DECORATION"
 
 # Display a random motivational message in a different color box
-MESSAGES=(
-    "Have a productive day!"
-    "Time to code something amazing!"
-    "Remember to stay hydrated!"
-    "Don't forget to stretch occasionally!"
-    "You're going to accomplish great things today!"
-    "Keep being awesome!"
-    "Today is full of possibilities!"
-)
+# Install jq if not already installed
+# sudo apt install jq / brew install jq
 
-RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+# Load messages from JSON file
+if [ -f "$HOME/.config/termish/messages.json" ]; then
+    # Get the number of messages
+    MESSAGE_COUNT=$(jq '.messages | length' "$HOME/.config/termish/messages.json")
+    # Select a random message
+    RANDOM_INDEX=$((RANDOM % MESSAGE_COUNT))
+    RANDOM_MESSAGE=$(jq -r ".messages[$RANDOM_INDEX]" "$HOME/.config/termish/messages.json")
+else
+    # Fallback to hardcoded messages if file doesn't exist
+    MESSAGES=(
+        "Have a productive day!"
+    )
+    RANDOM_MESSAGE=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+fi
+
 MESSAGE_COLOR=$(get_random_color)
 BOX_COLOR=$(get_random_color)
 
